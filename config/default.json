@@ -1,0 +1,14 @@
+{
+    "server": "dummy",
+    "options":{
+      "database": "dummy"
+    },
+    "authentication":{
+      "type": "default",
+      "options":{
+        "userName": "dummy",
+        "password": "dummy"
+      }
+    },
+    "schema": "dummy"
+}

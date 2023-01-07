@@ -1,59 +1,54 @@
-/* 1. expressモジュールをロードし、インスタンス化してappに代入。*/
+const config = require('config');
+const Connection = require('tedious').Connection;
+const Request = require('tedious').Request;
+
 var express = require("express");
 var app = express();
-
-/* 2. listen()メソッドを実行して3000番ポートで待ち受け。*/
 var server = app.listen(3000, function(){
     console.log("Node.js is listening to PORT:" + server.address().port);
 });
 
-/* 3. 以後、アプリケーション固有の処理 */
-const Connection = require('tedious').Connection;
-const config = {
-    server:'d1ahssjw01kbtcom.database.windows.net',
-    options:{
-        database:'d1ahssjw01-sd01',
-    },
-    authentication: {
-      type: 'default',
-      options: {
-        userName: 'DEVELOPER',
-      }
-    }
-};
 
-const Request = require('tedious').Request;
+// Config内に別で使用するためのノイズになるものがあるが、読み飛ばしてくれればヨシとしたい。
 var connection = new Connection(config);
-connection.connect(connected);
+// グローバル変数にしてしまうと不味いのが見えているので、仮。
+var pageId;
 
 function execute() {
     // Query Request
-    let sql = getQuery( 'K280DBT', '再検補充発注');
+    let sql = getQuery();
     const request = new Request(sql, function(err, rows) {
         if ( err ) {
             console.log('Query request error.(' + err + ')');
             connection.close();
-            //process.exit();
         }
          // connection.close();
          // console.log('Connection Closed');
     });
-    // exec
     connection.execSql(request);
 }
 
-app.get("/api/accesscount", function (req, res, next) {
+app.get("/api/accesscount/:pageId", function (req, res, next) {
+
+    pageId = req.params.pageId;
+    console.log('params.pageId = ' + req.params.pageId);
+    if (pageId == null || pageId == '') {
+        res.status(200).send('require pageId');
+        res.end();
+        return;
+    }
 
     console.log('Query Start');
-    //connection = new Connection(config);
+    connection = new Connection(config);
+    connection.connect(connected);
+    /*
     if (!connection.connected){
       console.log('recconect');
       connection.connect(connected)
     }else {
       execute();
     }
-    //connect(connection).then(execute());
-
+    //connect(connection).then(execute());*/
     console.log('Query End');
 
     res.status(200).send('It Worked');
@@ -74,12 +69,12 @@ function connected(err) {
         //process.exit();
     }
     console.log('SQL Server connected.');
-    //execute();
+    execute();
 };
 
-function getQuery( schema , pageId ) {
+function getQuery() {
     return `
-    MERGE INTO `+ schema + `.SQLDB_IF_TBL_KTAUTHAPアクセスカウンタ A
+    MERGE INTO `+ config.get('schema') + `.SQLDB_IF_TBL_KTAUTHAPアクセスカウンタ A
     USING
       (
         SELECT
