@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# コンフィグにDB接続定義が含まれるので、基本除外。
+config/default.json
+
+# 悪さするので
+package-lock.json
