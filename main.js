@@ -33,7 +33,7 @@ app.get("/api/accesscount/:pageId", function (req, res, next) {
     pageId = req.params.pageId;
     console.log('params.pageId = ' + req.params.pageId);
     if (pageId == null || pageId == '') {
-        res.status(200).send('require pageId');
+        res.status(200).send('Require pageId');
         res.end();
         return;
     }
@@ -78,7 +78,7 @@ function getQuery() {
     USING
       (
         SELECT
-          '202224' AS アプリケーションID
+          config.get('timsApplicationId') AS アプリケーションID
         , '` + pageId + `' AS ページID
         , FORMAT(GETDATE(),'yyyyMMdd') 集計日
       ) AS B

@@ -1,14 +1,15 @@
 {
-    "server": "dummy",
+  "server": "dummy",
+  "options":{
+    "database": "dummy"
+  },
+  "authentication":{
+    "type": "default",
     "options":{
-      "database": "dummy"
-    },
-    "authentication":{
-      "type": "default",
-      "options":{
-        "userName": "dummy",
-        "password": "dummy"
-      }
-    },
-    "schema": "dummy"
+      "userName": "dummy",
+      "password": "dummy"
+    }
+  },
+  "schema": "dummy",
+  "timsApplicationId": "202224"
 }
